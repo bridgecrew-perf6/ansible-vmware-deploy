@@ -17,5 +17,5 @@ ansible-playbook -i input.json playbook.yaml
 
 You will be prompted with username and password for the vCenter server.
 
-Note: Due to VMware you might be required to connected one or more network interface for it to complete.
+Note: Due to VMware you might be required to connect the network interface(s) on one or more vms for it to complete.
 Otherwise set wait_for_ip_address: False
