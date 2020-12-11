@@ -1,0 +1,55 @@
+- hosts: all
+  connection: local
+  vars_prompt:
+    - name: "vcenter_username"
+      prompt: "vCenter username:"
+      private: no
+    - name: "vcenter_password"
+      prompt: "vCenter Password:"
+      private: yes
+  collections:
+  - community.vmware
+  - ansible.netcommon
+  tasks:
+  - name: "Search folders for Template - {{ template_name }}"
+    vmware_guest_find:
+      hostname: "{{ vcenter_hostname }}"
+      username: "{{ vcenter_username }}"
+      password: "{{ vcenter_password }}"
+      validate_certs: False
+      name: "{{ template_name }}"
+    delegate_to: localhost
+    register: template_facts
+
+  - name: Find template folder in datacenter and set fact
+    loop: "{{ template_facts.folders }}"
+    when: item is match("/" + datacenter + "/")
+    set_fact:
+      template: "{{ item }}/{{ template_name }}"
+
+  - name: Search for template in other datacenters
+    when: template is undefined
+    set_fact:
+      template: "{{ template_facts.folders[0] }}/{{ template_name }}"
+
+  - name: "Deploy virtual machine - {{ inventory_hostname }}"
+    vmware_guest:
+      hostname: "{{ vcenter_hostname }}"
+      username: "{{ vcenter_username }}"
+      password: "{{ vcenter_password }}"
+      validate_certs: no
+      cluster: "{{ cluster }}"
+      datacenter: "{{ datacenter }}"
+      datastore: "{{ datastore }}"
+      folder: "{{ folder }}"
+      template: "{{ template }}"
+      name: "{{ inventory_hostname }}"
+      customization: "{{ customization | default(omit) }}"
+      hardware: "{{ hardware | default(omit) }}"
+      disk: "{{ disk | default(omit) }}"
+      networks: "{{ networks }}"
+      state: poweredon
+      annotation: "Deployed by {{ vcenter_username }} - {{ ansible_date_time.iso8601 }} using Ansible"
+      wait_for_ip_address: True
+    delegate_to: localhost
+
