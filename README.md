@@ -1,7 +1,7 @@
 # ansible-vmware-deploy
 
 
-Prepations:
+Preparations:
 ```
 pip3 install -r requirements.txt
 
