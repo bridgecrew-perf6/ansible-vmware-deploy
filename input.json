@@ -34,7 +34,7 @@
             "ip": "10.0.0.10",
             "netmask": "255.255.255.0",
             "gateway": "10.0.0.1",
-            "dswitch_name": "DSwitch",
+            "dswitch_name": "DSwitch"
           }
         ]
       }
