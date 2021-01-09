@@ -6,7 +6,7 @@
         "datastore": "datastore-name",
         "datacenter": "datacenter-name",
         "cluster": "cluster",
-        "folder": "cluster-name",
+        "folder": "folder-name",
         "template_name": "template-name",
        "customization": {
          "dns_servers": [ "dns-server" ]
